@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use bevy::utils::Duration;
 
 use crate::entities::Playable;
-use crate::components::Moveable;
+use crate::components::{Moveable, Friendly, Damage, BoxCollider, Lifetime};
 use super::projectile::Projectile;
 
 #[derive(Component)]
@@ -30,17 +30,24 @@ pub fn update_weapons(
             weapon.cooldown_timer = Duration::from_secs_f32(0.0);
             let mut flip = 1.0;
             if sprite.flip_x { flip = -1.0; }
+            let rotation = Quat::from_rotation_z(-moveable.get_direction().angle_between(Vec3::Y) * flip);
+            
             commands
                 .spawn_bundle(SpriteBundle {
                     texture: asset_server.load(&weapon.texture),
                     transform: Transform {
                         translation: player_transform.translation,
                         scale: Vec3::new(1.0, 1.0, 1.0) * weapon.scale,
-                        rotation: Quat::from_rotation_z(-moveable.get_direction().angle_between(Vec3::Y) * flip),
+                        rotation,
                     },
                     ..Default::default()
                 })
-                .insert( Projectile::new(weapon.projectile_speed, weapon.projectile_lifetime));
+                .insert( Projectile{})
+                .insert(Friendly{})
+                .insert(Damage::new(100.0))
+                .insert(BoxCollider::new(190.0*weapon.scale, 420.0*weapon.scale))
+                .insert(Lifetime::new(weapon.projectile_lifetime))
+                .insert(Moveable::new(true, weapon.projectile_speed, rotation.mul_vec3(Vec3::Y)));
         }
     }
 }
@@ -53,9 +60,9 @@ pub fn spawn_w_meteor(mut commands: Commands) {
             texture: "meteor.png".to_string(), 
             scale: 0.1,
 
-            cooldown: Duration::from_secs_f32(1.0), 
+            cooldown: Duration::from_secs_f32(0.1), 
             cooldown_timer: Duration::from_secs_f32(0.0),
-            projectile_speed: 10.0,
+            projectile_speed: 6.0,
             projectile_lifetime: 1.5,
         });
 }

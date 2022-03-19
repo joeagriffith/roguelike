@@ -1,7 +1,7 @@
 use bevy::prelude::{Query, Transform, With, Vec3};
 
-use crate::entities::{Hostile, Playable};
-use crate::components::{Moveable};
+use crate::entities::{Playable};
+use crate::components::{Moveable, Hostile};
 
 pub fn target_player(
     mut query: Query<(&mut Moveable, &Transform), With<Hostile>>,

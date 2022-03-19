@@ -7,7 +7,17 @@ pub struct Moveable {
     direction: Vec3,
 }
 impl Moveable {
-    pub fn new(speed:f32) -> Self {
+
+    pub fn new(is_moving:bool, speed:f32, direction:Vec3) -> Self {
+        Self {
+            is_moving,
+            speed,
+            direction,
+        }
+    }
+
+
+    pub fn from_speed(speed:f32) -> Self {
         Self {
             is_moving: true,
             speed,

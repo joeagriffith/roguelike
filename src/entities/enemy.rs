@@ -1,20 +1,18 @@
 use bevy::prelude::*;
 use rand::prelude::*;
 use std::f32::consts::PI;
-use crate::components::Moveable;
+use crate::components::{Moveable, Health, Hostile, BoxCollider};
 use crate::config::WIDTH;
 use crate::entities::player::Playable;
 
 
-#[derive(Component)]
-pub struct Hostile {
-}
+
 
 pub fn spawn_enemy(
     commands: Commands,
     asset_server: Res<AssetServer>,
     texture_atlases: ResMut<Assets<TextureAtlas>>,
-    query: Query<&Transform, With<Playable>>
+    query: Query<&Transform, With<Playable>>,
 ) {
     spawn_hostile_from_spritesheet(
         commands,
@@ -26,6 +24,7 @@ pub fn spawn_enemy(
         0.1,
         3.0,
         query.single().translation,
+        100.0,
     )
 }
 
@@ -39,6 +38,7 @@ fn spawn_hostile_from_spritesheet(
     sprite_speed: f32,
     move_speed: f32,
     player_translation: Vec3,
+    max_health: f32,
 ) {
     let texture_handle = asset_server.load(texture_filename);
     let texture_atlas = TextureAtlas::from_grid(texture_handle, Vec2::new(24.0, 24.0), cols, rows);
@@ -57,7 +57,9 @@ fn spawn_hostile_from_spritesheet(
         })
         .insert(Timer::from_seconds(sprite_speed, true))
         .insert(Hostile{})
-        .insert(Moveable::new(move_speed));
+        .insert(Moveable::from_speed(move_speed))
+        .insert(Health::new(max_health))
+        .insert(BoxCollider::new(22.0*scale, 22.0*scale));
 }
 
 fn random_spawn_location( player_translation: Vec3 ) -> Vec3 {
