@@ -9,7 +9,7 @@ pub struct Moveable {
 impl Moveable {
     pub fn new(speed:f32) -> Self {
         Self {
-            is_moving: false,
+            is_moving: true,
             speed,
             direction: Vec3::new(1.0, 0.0, 0.0),
         }

@@ -1,3 +1,5 @@
 mod player;
+mod enemy;
 
-pub use player::{Player, spawn_player, keyboard_input};
+pub use player::*;
+pub use enemy::*;

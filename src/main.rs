@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use bevy::core::FixedTimestep;
 
 mod config;
 mod entities;
@@ -11,11 +12,12 @@ use entities::*;
 use config::{WIDTH, ASPECT_RATIO};
 use items::*;
 use components::{move_moveables};
-use systems::{animate_spritesheet};
+use systems::{animate_spritesheet, target_player, camera_follow_player};
 
 
 #[derive(SystemLabel, Debug, Hash, PartialEq, Eq, Clone)]
 enum SystemLabels {
+    PlayerInit,
     Input,
     Movement,
     Animation,
@@ -36,11 +38,17 @@ fn main() {
         .add_system(update_weapons)
         .add_system_set(SystemSet::new()
             .with_system(keyboard_input.label(SystemLabels::Input))
+            .with_system(target_player.label(SystemLabels::Input))
             .with_system(move_moveables.label(SystemLabels::Movement).after(SystemLabels::Input))
             .with_system(animate_spritesheet.label(SystemLabels::Animation).after(SystemLabels::Movement))
+            .with_system(camera_follow_player.after(SystemLabels::Movement))
         )
         // .add_system(move_moveables_sys)
         .add_system(projectile_movement)
+        .add_system_set(SystemSet::new()
+            .with_run_criteria(FixedTimestep::step(0.25))
+            .with_system(spawn_enemy)
+        )
         .add_plugins(DefaultPlugins)
         .run();
 }

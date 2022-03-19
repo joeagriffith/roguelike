@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy::utils::Duration;
 
-use crate::entities::Player;
+use crate::entities::Playable;
 use crate::components::Moveable;
 use super::projectile::Projectile;
 
@@ -20,7 +20,7 @@ pub fn update_weapons(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     mut weapon_query: Query<&mut Weapon>,
-    player_query: Query<(&Transform, &TextureAtlasSprite, &Moveable), With<Player>>,
+    player_query: Query<(&Transform, &TextureAtlasSprite, &Moveable), With<Playable>>,
     time: Res<Time>,
 ){
     let (player_transform, sprite, moveable) = player_query.get_single().unwrap();

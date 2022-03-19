@@ -5,3 +5,6 @@ pub const ASPECT_RATIO:f32 = 4.0/3.0;
 
 // Player options
 pub const PLAYER_SPEED:f32 = 5.0;
+
+// Enemy options
+pub const ENEMY_SPEED:f32 = 3.0;

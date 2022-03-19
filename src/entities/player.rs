@@ -6,7 +6,7 @@ use crate::components::{Moveable};
 
 
 #[derive(Component)]
-pub struct Player {
+pub struct Playable {
 }
 
 pub fn spawn_player(
@@ -24,13 +24,13 @@ pub fn spawn_player(
             ..Default::default()
         })
         .insert(Timer::from_seconds(0.1, true))
-        .insert(Player{})
+        .insert(Playable{})
         .insert(Moveable::new(PLAYER_SPEED));
 }
 
 pub fn keyboard_input(
     keyboard_input: Res<Input<KeyCode>>,
-    mut query: Query<&mut Moveable, With<Player>>,
+    mut query: Query<&mut Moveable, With<Playable>>,
 ) {
     let mut moveable = query.single_mut();
 
