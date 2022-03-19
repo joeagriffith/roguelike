@@ -1,13 +1,25 @@
 use bevy::prelude::*;
 
 mod config;
-mod player;
+mod entities;
 mod items;
+mod components;
+mod systems;
 
 
-use player::*;
+use entities::*;
 use config::{WIDTH, ASPECT_RATIO};
 use items::*;
+use components::{move_moveables};
+use systems::{animate_spritesheet};
+
+
+#[derive(SystemLabel, Debug, Hash, PartialEq, Eq, Clone)]
+enum SystemLabels {
+    Input,
+    Movement,
+    Animation,
+}
 
 fn main() {
     App::new()
@@ -21,12 +33,14 @@ fn main() {
         .add_startup_system(setup)
         .add_startup_system(spawn_player)
         .add_startup_system(spawn_w_meteor)
-        .add_system(update_weapons_system)
+        .add_system(update_weapons)
         .add_system_set(SystemSet::new()
-            .with_system(keyboard_input_system.label(PlayerActivity::Movement))
-            .with_system(animate_sprite_system.after(PlayerActivity::Movement))
+            .with_system(keyboard_input.label(SystemLabels::Input))
+            .with_system(move_moveables.label(SystemLabels::Movement).after(SystemLabels::Input))
+            .with_system(animate_spritesheet.label(SystemLabels::Animation).after(SystemLabels::Movement))
         )
-        .add_system(projectile_movement_system)
+        // .add_system(move_moveables_sys)
+        .add_system(projectile_movement)
         .add_plugins(DefaultPlugins)
         .run();
 }

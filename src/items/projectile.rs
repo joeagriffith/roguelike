@@ -3,7 +3,6 @@ use bevy::utils::Duration;
 
 #[derive(Component)]
 pub struct Projectile {
-    // velocity: Vec3,
     speed: f32,
     lifetime: Duration,
     lifetime_timer: Duration,
@@ -18,7 +17,7 @@ impl Projectile {
     }
 }
 
-pub fn projectile_movement_system( mut query: Query<(&mut Projectile, &mut Transform)>, time: Res<Time>) {
+pub fn projectile_movement( mut query: Query<(&mut Projectile, &mut Transform)>, time: Res<Time>) {
 
     for (mut projectile, mut transform) in query.iter_mut() {
         projectile.lifetime_timer += time.delta();
