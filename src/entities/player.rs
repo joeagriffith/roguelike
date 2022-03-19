@@ -34,6 +34,7 @@ pub fn keyboard_input(
 ) {
     let mut moveable = query.single_mut();
 
+    //Only set to 0 if not standing on blood
     let mut dir = Vec3::new(0.0, 0.0, 0.0);
 
     if keyboard_input.pressed(KeyCode::Up)      { dir.y += 1.0; }

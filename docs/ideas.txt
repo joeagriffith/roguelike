@@ -1,0 +1,8 @@
+Blood
+    - Blood stays for Long duration (not perm)
+    - enables blood skating
+        - maintain velocity
+
+Setting
+    - enemies are humans from stone age > futuristic
+    - character is a demon, evolving?
