@@ -1,3 +1,5 @@
+Make spawners a child of player to remove need to query player pos
+
 Blood
     - Blood stays for Long duration (not perm)
     - enables blood skating
@@ -13,3 +15,6 @@ Further Parrallalization (or however its spelt)
 
 Using circle-circle instead of aabb for collision detection
     - less accurate as most sprites aren't circular but might be much faster
+
+use one timer per animation.
+    - maybe same mobs can use the same timer 
