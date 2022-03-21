@@ -6,3 +6,10 @@ Blood
 Setting
     - enemies are humans from stone age > futuristic
     - character is a demon, evolving?
+
+Further Parrallalization (or however its spelt)
+    - can use query.par_for_each_mut to parraa.. systems like movement or colision
+    - Bevy reccomends checking documentation for more info on when to use or not use parallelIterator over a normal Iterator.
+
+Using circle-circle instead of aabb for collision detection
+    - less accurate as most sprites aren't circular but might be much faster

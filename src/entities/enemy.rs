@@ -1,12 +1,8 @@
 use bevy::prelude::*;
 use rand::prelude::*;
 use std::f32::consts::PI;
-use crate::components::{Moveable, Health, Hostile, BoxCollider};
+use crate::components::{Moveable, Health, Hostile, BoxCollider, Playable, Damage};
 use crate::config::WIDTH;
-use crate::entities::player::Playable;
-
-
-
 
 pub fn spawn_enemy(
     commands: Commands,
@@ -59,7 +55,8 @@ fn spawn_hostile_from_spritesheet(
         .insert(Hostile{})
         .insert(Moveable::from_speed(move_speed))
         .insert(Health::new(max_health))
-        .insert(BoxCollider::new(22.0*scale, 22.0*scale));
+        .insert(BoxCollider::new(22.0*scale, 22.0*scale))
+        .insert(Damage::new(1.0));
 }
 
 fn random_spawn_location( player_translation: Vec3 ) -> Vec3 {

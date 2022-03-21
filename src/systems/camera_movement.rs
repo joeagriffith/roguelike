@@ -1,5 +1,5 @@
 use bevy::prelude::{QuerySet, QueryState, With, Transform, Camera};
-use crate::entities::Playable;
+use crate::components::Playable;
 
 pub fn camera_follow_player(
     mut query: QuerySet<(

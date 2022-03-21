@@ -1,8 +1,7 @@
 use bevy::prelude::*;
 use bevy::utils::Duration;
 
-use crate::entities::Playable;
-use crate::components::{Moveable, Friendly, Damage, BoxCollider, Lifetime};
+use crate::components::{Moveable, Friendly, Damage, BoxCollider, Lifetime, Playable};
 use super::projectile::Projectile;
 
 #[derive(Component)]
@@ -60,9 +59,9 @@ pub fn spawn_w_meteor(mut commands: Commands) {
             texture: "meteor.png".to_string(), 
             scale: 0.1,
 
-            cooldown: Duration::from_secs_f32(0.1), 
+            cooldown: Duration::from_secs_f32(0.25), 
             cooldown_timer: Duration::from_secs_f32(0.0),
-            projectile_speed: 6.0,
+            projectile_speed: 10.0,
             projectile_lifetime: 1.5,
         });
 }

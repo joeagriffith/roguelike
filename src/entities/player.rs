@@ -2,12 +2,9 @@ use bevy::prelude::*;
 use bevy::input::{keyboard::KeyCode, Input};
 
 use crate::config::{PLAYER_SPEED};
-use crate::components::{Moveable, BoxCollider};
+use crate::components::{Moveable, BoxCollider, Health, Playable};
 
 
-#[derive(Component)]
-pub struct Playable {
-}
 
 pub fn spawn_player(
     mut commands: Commands,
@@ -26,7 +23,8 @@ pub fn spawn_player(
         .insert(Timer::from_seconds(0.1, true))
         .insert(Playable{})
         .insert(Moveable::from_speed(PLAYER_SPEED))
-        .insert(BoxCollider::new(22.0*4.0, 22.0*4.0));
+        .insert(BoxCollider::new(22.0*4.0, 22.0*4.0))
+        .insert(Health::new(100.0));
 }
 
 pub fn keyboard_input(
@@ -51,6 +49,7 @@ pub fn keyboard_input(
     } else {
         moveable.set_moving(false);
     }
+
 }
 
 

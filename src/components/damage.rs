@@ -10,5 +10,5 @@ impl Damage {
             damage,
         }
     }
-    pub fn get_damage(&self) -> f32 { self.damage }
+    pub fn get(&self) -> f32 { self.damage }
 }
