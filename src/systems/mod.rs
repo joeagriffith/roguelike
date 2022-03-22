@@ -6,6 +6,7 @@ mod scoreboard;
 mod healthbar;
 mod teardown;
 mod restart;
+mod input;
 
 pub use animation::*;
 pub use targeting::*;
@@ -15,3 +16,4 @@ pub use scoreboard::*;
 pub use healthbar::*;
 pub use teardown::*;
 pub use restart::*;
+pub use input::*;
