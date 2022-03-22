@@ -1,7 +1,5 @@
 use bevy::prelude::*;
-use bevy::input::{keyboard::KeyCode, Input};
 
-use crate::config::{PLAYER_SPEED};
 use crate::components::{Moveable, BoxCollider, Health, Playable};
 
 

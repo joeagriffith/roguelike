@@ -1,6 +1,4 @@
 use bevy::prelude::*;
-use bevy::core::FixedTimestep;
-use bevy::sprite::MaterialMesh2dBundle;
 
 mod config;
 mod entities;
@@ -12,7 +10,7 @@ mod systems;
 use entities::*;
 use config::{WIDTH, ASPECT_RATIO, TITLE_FONT, TEXT_FONT, BUFFER};
 use items::*;
-use components::{move_moveables, update_lifetimes, Scoreboard, Health, Playable, Healthbar};
+use components::{move_moveables, update_lifetimes, Scoreboard, Healthbar};
 use systems::*;
 
 
@@ -82,14 +80,6 @@ fn main() {
         .run();
 }
 
-//DEBUGGGGGGGGGGGGGGGG
-fn print_health(
-    query: Query<&Health, With<Playable>>,
-) {
-    let health = query.single().get_health();
-    println!("Player health: {health}");
-}
-
 fn setup_camera(
     mut commands: Commands,
 ) {
@@ -100,8 +90,6 @@ fn init_hud(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     query: Query<Entity, With<Camera>>,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<ColorMaterial>>, 
 ) {
     let camera = query.single();
 

@@ -13,12 +13,6 @@ impl Lifetime {
             time_alive: Duration::ZERO,
         }
     }
-    pub fn from_f32(lifetime:f32) -> Self {
-        Self {
-            lifetime: Duration::from_secs_f32(lifetime),
-            time_alive: Duration::ZERO,
-        }
-    }
     fn tick(&mut self, time:Duration) {
         self.time_alive += time;
     }

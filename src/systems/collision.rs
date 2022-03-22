@@ -39,7 +39,6 @@ pub fn friendly_collision_check(
 }
 
 pub fn player_hostile_check(
-    mut commands: Commands,
     mut player_query: Query<(&Transform, &BoxCollider, &mut Health), With<Playable>>,
     hostile_query: Query<(&Transform, &BoxCollider, &Damage), With<Hostile>>,
     mut state: ResMut<State<GameState>>,
