@@ -1,5 +1,3 @@
-Background
-
 Event system
     - rather than check every frame for certain conditions, can clean up with events
     - player_damage event to check for death, update healthbar, update health   

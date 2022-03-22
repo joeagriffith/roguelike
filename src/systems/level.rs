@@ -16,7 +16,7 @@ pub fn load_level(
 
     let level:Map;
     match state.current() {
-        GameState::Playing => level = bg(),
+        GameState::Playing => level = lvl_1(),
         GameState::GameOver => level = gameover(),
     }
     commands.spawn_bundle(bg_spritebundle(level, asset_server));
@@ -34,7 +34,7 @@ fn bg_spritebundle(map:Map, asset_server: Res<AssetServer>) -> SpriteBundle {
     }
 }
 
-fn bg() -> Map {
+fn lvl_1() -> Map {
     Map {
         texture: "bg_level1.png".to_string(),
         size: Vec2::new(1440.0, 960.0),
