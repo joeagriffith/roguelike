@@ -20,7 +20,7 @@ pub fn load_level(
 
 fn lvl_1_bundles(asset_server: Res<AssetServer>) -> (Vec<SpriteBundle>, Vec<Text2dBundle>) {
     let mut sprites:Vec<SpriteBundle> = Vec::new();
-    let mut texts: Vec<Text2dBundle> = Vec::new();
+    let texts: Vec<Text2dBundle> = Vec::new();
 
     // Background
     sprites.push(SpriteBundle {

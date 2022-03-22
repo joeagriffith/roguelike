@@ -8,7 +8,7 @@ mod systems;
 
 
 use entities::*;
-use config::{WIDTH, ASPECT_RATIO, TITLE_FONT, TEXT_FONT, BUFFER};
+use config::{WIDTH, ASPECT_RATIO, TEXT_FONT, BUFFER};
 use items::*;
 use components::{move_moveables, update_lifetimes, Scoreboard, Healthbar};
 use systems::*;
@@ -19,7 +19,6 @@ enum SystemLabels {
     Input,
     Movement,
     Animation,
-    Teardown,
 }
 
 #[derive(Clone, Eq, PartialEq, Debug, Hash)]
@@ -68,9 +67,9 @@ fn main() {
             .with_system(animate_spritesheet.label(SystemLabels::Animation).after(SystemLabels::Movement))
             .with_system(camera_follow_player.after(SystemLabels::Movement))
             .with_system(update_scoreboard)
-            .with_system(player_hostile_check)
+            .with_system(player_hostile_collision_check)
             .with_system(update_healthbar)
-            .with_system(friendly_collision_check)
+            .with_system(friendly_hostile_collision_check)
             .with_system(update_spawners)
         )
         .add_system_set(SystemSet::on_exit(GameState::Playing)

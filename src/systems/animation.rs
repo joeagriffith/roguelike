@@ -25,7 +25,6 @@ pub fn animate_spritesheet(
             if timer.finished() {
                 let texture_atlas = texture_atlases.get(texture_atlas_handle).unwrap();
                 sprite.index = (sprite.index + 1) % texture_atlas.textures.len();
-                
             }
         } else {
             sprite.index = 0;

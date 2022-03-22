@@ -4,7 +4,7 @@ use crate::components::{Friendly, Damage, Hostile, Health, BoxCollider, Playable
 use crate::{Game, GameState};
 
 // Checks for collisions between player shot projectiles and hostiles
-pub fn friendly_collision_check(
+pub fn friendly_hostile_collision_check(
         mut commands: Commands,
         mut game: ResMut<Game>,
         mut friendly_query: Query<(Entity, &Transform, &BoxCollider, &Damage), With<Friendly>>,
@@ -38,7 +38,7 @@ pub fn friendly_collision_check(
     }
 }
 
-pub fn player_hostile_check(
+pub fn player_hostile_collision_check(
     mut player_query: Query<(&Transform, &BoxCollider, &mut Health), With<Playable>>,
     hostile_query: Query<(&Transform, &BoxCollider, &Damage), With<Hostile>>,
     mut state: ResMut<State<GameState>>,
