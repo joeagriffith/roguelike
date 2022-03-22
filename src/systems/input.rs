@@ -1,5 +1,6 @@
-use bevy::prelude::{Res, Input, KeyCode, Query, With, Vec3};
+use bevy::prelude::{Res, Input, KeyCode, Query, With, Vec3, ResMut, State};
 use crate::components::{Playable, Moveable};
+use crate::GameState;
 
 pub fn keyboard_input(
     keyboard_input: Res<Input<KeyCode>>,
@@ -22,5 +23,14 @@ pub fn keyboard_input(
         moveable.set_moving(true);
     } else {
         moveable.set_moving(false);
+    }
+}
+
+pub fn restart_check(
+    mut state: ResMut<State<GameState>>, 
+    keyboard_input: Res<Input<KeyCode>>
+) {
+    if keyboard_input.just_pressed(KeyCode::Space) {
+        state.set(GameState::Playing).unwrap();
     }
 }

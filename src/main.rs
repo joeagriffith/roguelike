@@ -75,6 +75,7 @@ fn main() {
         )
         .add_system_set(SystemSet::on_exit(GameState::Playing)
             .with_system(teardown) 
+            .with_system(reset_camera)
         )
         .add_system_set(SystemSet::on_enter(GameState::GameOver)
             // .with_system(teardown.label(SystemLabels::Teardown))
@@ -93,6 +94,13 @@ fn setup_camera(
     mut commands: Commands,
 ) {
     commands.spawn_bundle(OrthographicCameraBundle::new_2d());
+}
+
+fn reset_camera(
+    mut query: Query<&mut Transform, With<Camera>>
+) {
+    query.single_mut().translation = Vec3::new(0.0, 0.0, 999.9);
+
 }
 
 fn init_hud(

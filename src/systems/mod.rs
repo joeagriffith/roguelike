@@ -5,7 +5,6 @@ mod collision;
 mod scoreboard;
 mod healthbar;
 mod teardown;
-mod restart;
 mod input;
 mod level;
 
@@ -16,6 +15,5 @@ pub use collision::*;
 pub use scoreboard::*;
 pub use healthbar::*;
 pub use teardown::*;
-pub use restart::*;
 pub use input::*;
 pub use level::*;
