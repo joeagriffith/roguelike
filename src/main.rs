@@ -53,13 +53,14 @@ fn main() {
         .add_state(GameState::Playing)
         .add_startup_system(setup_camera)
         .add_system_set(SystemSet::on_enter(GameState::Playing)
-            .with_system(spawn_w_meteor)
-            .with_system(spawn_player)
+            .with_system(reset_game)
+            // .with_system(spawn_w_meteor)
+            .with_system(spawn_player.chain(spawn_w_meteor))
             .with_system(init_hud)
             .with_system(spawn_kobold_spawner)
         )
         .add_system_set(SystemSet::on_update(GameState::Playing)
-            .with_system(update_weapons)
+            .with_system(update_guns)
             .with_system(update_lifetimes)
             .with_system(keyboard_input.label(SystemLabels::Input))
             .with_system(target_player.label(SystemLabels::Input))
@@ -88,7 +89,6 @@ fn print_health(
     let health = query.single().get_health();
     println!("Player health: {health}");
 }
-
 
 fn setup_camera(
     mut commands: Commands,
@@ -146,4 +146,10 @@ fn init_hud(
         transform: Transform::from_translation(Vec3::new(0.0, 0.0, 1.0)),
         ..Default::default()
     }).insert(Parent(healthbar)).insert(Healthbar{});
+}
+
+fn reset_game(
+    mut game: ResMut<Game>,
+) {
+    game.kills = 0;
 }

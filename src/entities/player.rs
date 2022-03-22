@@ -10,21 +10,25 @@ pub fn spawn_player(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     mut texture_atlases: ResMut<Assets<TextureAtlas>>,
-) {
+) -> Entity {
     let texture_handle = asset_server.load("gabe-idle-run.png");
     let texture_atlas = TextureAtlas::from_grid(texture_handle, Vec2::new(24.0, 24.0), 7, 1);
     let texture_atlas_handle = texture_atlases.add(texture_atlas);
     commands
         .spawn_bundle(SpriteSheetBundle {
+            sprite: TextureAtlasSprite {
+                custom_size: Some(Vec2::new(96.0, 96.0)),
+                ..Default::default()
+            },
             texture_atlas: texture_atlas_handle,
-            transform: Transform::from_scale(Vec3::splat(4.0)),
             ..Default::default()
         })
         .insert(Timer::from_seconds(0.1, true))
         .insert(Playable{})
         .insert(Moveable::from_speed(PLAYER_SPEED))
-        .insert(BoxCollider::new(22.0*4.0, 22.0*4.0))
-        .insert(Health::new(100.0));
+        .insert(BoxCollider::new(Vec2::new(22.0*4.0, 22.0*4.0)))
+        .insert(Health::new(100.0))
+        .id()
 }
 
 pub fn keyboard_input(

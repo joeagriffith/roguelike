@@ -41,12 +41,11 @@ impl Spawner {
 
 pub fn spawn_kobold_spawner(
     mut commands: Commands,
-    // query: Query<Entity, With<Playable>>,
+    query: Query<Entity, With<Camera>>,
 ) {
-    // let player = query.single();
     commands
         .spawn()
-        .insert(Timer::from_seconds(0.5, true))
+        .insert(Timer::from_seconds(0.01, true))
         .insert(Spawner::new(
             "kobold-idle.png".to_string(),
             1,
@@ -57,17 +56,12 @@ pub fn spawn_kobold_spawner(
             100.0,
             5.0,
         ));
-        // .insert(Parent(player));
 }
 
 fn random_spawn_location( player_translation: Vec3 ) -> Vec3 {
     let rand_angle = rand::thread_rng().gen_range(0.0..2.0*PI);
     player_translation + (0.75 * WIDTH * Quat::from_rotation_z(rand_angle).mul_vec3(Vec3::X))
 }
-// fn random_spawn_location() -> Vec3 {
-//     let rand_angle = rand::thread_rng().gen_range(0.0..2.0*PI);
-//     0.75 * WIDTH * Quat::from_rotation_z(rand_angle).mul_vec3(Vec3::X)
-// }
 
 pub fn update_spawners(
     mut commands: Commands,
@@ -91,7 +85,6 @@ pub fn update_spawners(
                     transform: Transform {
                         rotation: Quat::IDENTITY,
                         translation: random_spawn_location(player_translation),
-                        // translation: random_spawn_location(),
                         scale: Vec3::splat(spawner.scale),
                     },
                     ..Default::default()
@@ -100,7 +93,7 @@ pub fn update_spawners(
                 .insert(Hostile{})
                 .insert(Moveable::from_speed(spawner.move_speed))
                 .insert(Health::new(spawner.max_health))
-                .insert(BoxCollider::new(22.0*spawner.scale, 22.0*spawner.scale))
+                .insert(BoxCollider::new(Vec2::new(22.0*spawner.scale, 22.0*spawner.scale)))
                 .insert(Damage::new(spawner.damage));
         }
     }

@@ -7,7 +7,13 @@ pub struct Lifetime {
     time_alive: Duration,
 }
 impl Lifetime {
-    pub fn new(lifetime:f32) -> Self {
+    pub fn new(lifetime:Duration) -> Self {
+        Self {
+            lifetime,
+            time_alive: Duration::ZERO,
+        }
+    }
+    pub fn from_f32(lifetime:f32) -> Self {
         Self {
             lifetime: Duration::from_secs_f32(lifetime),
             time_alive: Duration::ZERO,

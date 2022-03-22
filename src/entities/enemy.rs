@@ -55,7 +55,7 @@ fn spawn_hostile_from_spritesheet(
         .insert(Hostile{})
         .insert(Moveable::from_speed(move_speed))
         .insert(Health::new(max_health))
-        .insert(BoxCollider::new(22.0*scale, 22.0*scale))
+        .insert(BoxCollider::new(Vec2::new(22.0*scale, 22.0*scale)))
         .insert(Damage::new(1.0));
 }
 

@@ -1,14 +1,6 @@
-Scoreboard
-
-GameStates (use alien_cake_addict as example)
-    - only run game systems in Playing state
-    - enable easy restart on death
-
-Hostile damage to Player
-    - damage system
-    - death system triggers GameState change
-
 Fix Weapon system to allow better modularity
+
+Background
 
 Blood
     - hostiles drop blood when killed, temporary
@@ -22,4 +14,3 @@ Event system
     - rather than check every frame for certain conditions, can clean up with events
     - player_damage event to check for death, update healthbar, update health   
     - kill_event to update scoreboard
-    - 

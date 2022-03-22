@@ -1,8 +1,8 @@
 mod weapon;
 mod projectile;
 
-pub use weapon::Weapon;
-pub use weapon::update_weapons;
+pub use weapon::Gun;
+pub use weapon::update_guns;
 
 pub use projectile::Projectile;
 // pub use projectile::projectile_movement;

@@ -5,63 +5,70 @@ use crate::components::{Moveable, Friendly, Damage, BoxCollider, Lifetime, Playa
 use super::projectile::Projectile;
 
 #[derive(Component)]
-pub struct Weapon {
-    texture: String,
-    scale: f32,
-
-    cooldown: Duration,
-    cooldown_timer: Duration,
-    projectile_speed: f32,
-    projectile_lifetime: f32,
+pub struct Gun {
+    proj_size: Vec2,
+    proj_texture: String,
+    proj_speed: f32,
+    proj_lifetime: Duration,
+    timer: Timer,
 }
 
-pub fn update_weapons(
+pub fn update_guns(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
-    mut weapon_query: Query<&mut Weapon>,
+    mut gun_query: Query<&mut Gun>,
     player_query: Query<(&Transform, &TextureAtlasSprite, &Moveable), With<Playable>>,
     time: Res<Time>,
 ){
     let (player_transform, sprite, moveable) = player_query.get_single().unwrap();
-    for mut weapon in weapon_query.iter_mut() {
-        weapon.cooldown_timer += time.delta();
-        if weapon.cooldown_timer > weapon.cooldown {
-            weapon.cooldown_timer = Duration::from_secs_f32(0.0);
+    for mut gun in gun_query.iter_mut() {
+        gun.timer.tick(time.delta());
+        if gun.timer.finished() {
             let mut flip = 1.0;
             if sprite.flip_x { flip = -1.0; }
             let rotation = Quat::from_rotation_z(-moveable.get_direction().angle_between(Vec3::Y) * flip);
             
             commands
                 .spawn_bundle(SpriteBundle {
-                    texture: asset_server.load(&weapon.texture),
+                    sprite: Sprite {
+                        custom_size: Some(gun.proj_size),
+                        ..Default::default()
+                    },
+                    texture: asset_server.load(&gun.proj_texture),
                     transform: Transform {
                         translation: player_transform.translation,
-                        scale: Vec3::new(1.0, 1.0, 1.0) * weapon.scale,
-                        rotation,
+                        rotation: rotation,
+                        scale: Vec3::ONE,
                     },
                     ..Default::default()
                 })
-                .insert( Projectile{})
+                .insert(Projectile{})
                 .insert(Friendly{})
                 .insert(Damage::new(100.0))
-                .insert(BoxCollider::new(190.0*weapon.scale, 420.0*weapon.scale))
-                .insert(Lifetime::new(weapon.projectile_lifetime))
-                .insert(Moveable::new(true, weapon.projectile_speed, rotation.mul_vec3(Vec3::Y)));
+                .insert(BoxCollider::new(gun.proj_size))
+                .insert(Lifetime::new(gun.proj_lifetime))
+                .insert(Moveable::new(true, gun.proj_speed, rotation.mul_vec3(Vec3::Y)));
         }
     }
 }
 
 
-pub fn spawn_w_meteor(mut commands: Commands) {
+pub fn spawn_w_meteor(
+    In(player): In<Entity>,
+    mut commands: Commands
+) {
     commands
         .spawn()
-        .insert(Weapon { 
-            texture: "meteor.png".to_string(), 
-            scale: 0.1,
+        .insert(meteor_blaster())
+        .insert(Parent(player));
+}
 
-            cooldown: Duration::from_secs_f32(0.25), 
-            cooldown_timer: Duration::from_secs_f32(0.0),
-            projectile_speed: 10.0,
-            projectile_lifetime: 1.5,
-        });
+fn meteor_blaster() -> Gun {
+    Gun {
+        proj_size: Vec2::new(19.0, 42.0),
+        proj_texture: "meteor.png".to_string(),
+        proj_speed: 10.0,
+        proj_lifetime: Duration::from_secs_f32(1.5),
+        timer: Timer::from_seconds(0.5, true),
+    }
 }

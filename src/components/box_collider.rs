@@ -6,10 +6,10 @@ pub struct BoxCollider {
     height:f32,
 }
 impl BoxCollider {
-    pub fn new( width:f32, height:f32 ) -> Self {
+    pub fn new( size: Vec2 ) -> Self {
         Self {
-            width,
-            height,
+            width: size.x,
+            height: size.y,
         }
     }
     pub fn get_size(&self) -> Vec2 { Vec2::new(self.width, self.height )}
