@@ -43,7 +43,7 @@ pub fn spawn_player(
             ..Default::default()
         })
         .insert(Timer::from_seconds(0.1, true))
-        .insert(Playable{})
+        .insert(Playable)
         .insert(Moveable::from_speed(player.move_speed))
         .insert(BoxCollider::new(player.size * player.scale))
         .insert(Health::new(player.max_health))

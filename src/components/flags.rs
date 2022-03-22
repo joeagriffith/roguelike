@@ -1,21 +1,17 @@
 use bevy::prelude::Component;
 
 #[derive(Component)]
-pub struct Friendly {
-}
+pub struct Friendly;
 
 #[derive(Component)]
-pub struct Hostile {
-}
+pub struct Hostile;
 
 #[derive(Component)]
-pub struct Scoreboard {
-}
+pub struct Scoreboard;
 
 #[derive(Component)]
-pub struct Playable {
-}
+pub struct Playable;
+
 
 #[derive(Component)]
-pub struct Healthbar {
-}
+pub struct Healthbar;

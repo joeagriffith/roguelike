@@ -1,9 +1,5 @@
 Background
 
-Unit Sizing
-    - Define Entity size and use SpriteBundle.sprite.custom_size to specify this on load
-    - this could also be used for initialising boxcolliders
-
 Event system
     - rather than check every frame for certain conditions, can clean up with events
     - player_damage event to check for death, update healthbar, update health   
@@ -12,3 +8,6 @@ Event system
 Blood
     - hostiles drop blood when killed, temporary
     - blood skating
+
+Loading Screens
+    - atm can see objects load in one by one, looks ugly

@@ -7,6 +7,7 @@ mod healthbar;
 mod teardown;
 mod restart;
 mod input;
+mod level;
 
 pub use animation::*;
 pub use targeting::*;
@@ -17,3 +18,4 @@ pub use healthbar::*;
 pub use teardown::*;
 pub use restart::*;
 pub use input::*;
+pub use level::*;

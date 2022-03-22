@@ -19,6 +19,7 @@ enum SystemLabels {
     Input,
     Movement,
     Animation,
+    Teardown,
 }
 
 #[derive(Clone, Eq, PartialEq, Debug, Hash)]
@@ -54,6 +55,7 @@ fn main() {
             .with_system(reset_game)
             // .with_system(spawn_w_meteor)
             .with_system(spawn_player.chain(spawn_w_meteor))
+            .with_system(load_level)
             .with_system(init_hud)
             .with_system(spawn_kobold_spawner)
         )
@@ -71,11 +73,18 @@ fn main() {
             .with_system(friendly_collision_check)
             .with_system(update_spawners)
         )
+        .add_system_set(SystemSet::on_exit(GameState::Playing)
+            .with_system(teardown) 
+        )
         .add_system_set(SystemSet::on_enter(GameState::GameOver)
-            .with_system(teardown)
+            // .with_system(teardown.label(SystemLabels::Teardown))
+            .with_system(load_level)
         )
         .add_system_set(SystemSet::on_update(GameState::GameOver)
             .with_system(restart_check)
+        )
+        .add_system_set(SystemSet::on_exit(GameState::GameOver)
+            .with_system(teardown)
         )
         .run();
 }
