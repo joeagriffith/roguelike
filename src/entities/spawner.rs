@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use rand::prelude::*;
 use std::f32::consts::PI;
-use crate::components::{Playable, Hostile, Moveable, Health, BoxCollider, Damage};
+use crate::components::{Playable, Hostile, Moveable, Health, BoxCollider, Damage, XpReward};
 use crate::config::WIDTH;
 
 #[derive(Component)]
@@ -16,6 +16,7 @@ pub struct Spawner {
     max_health: f32,
     damage: f32,
     timer: Timer,
+    xp_reward: f32,
 }
 
 pub fn spawn_kobold_spawner(
@@ -38,6 +39,7 @@ fn kobold_spawner() -> Spawner {
         max_health: 100.0,
         damage: 5.0,
         timer: Timer::from_seconds(1.0, true),
+        xp_reward: 1.0,
     }
 }
 
@@ -78,7 +80,8 @@ pub fn update_spawners(
                 .insert(Moveable::from_speed(spawner.move_speed))
                 .insert(Health::new(spawner.max_health))
                 .insert(BoxCollider::new(spawner.size * spawner.scale))
-                .insert(Damage::new(spawner.damage));
+                .insert(Damage::new(spawner.damage))
+                .insert(XpReward::new(spawner.xp_reward));
         }
     }
 }

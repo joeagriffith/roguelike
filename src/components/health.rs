@@ -1,4 +1,6 @@
-use bevy::prelude::{Component};
+use bevy::prelude::{Component, Query, With, EventWriter, ResMut, State};
+use crate::components::{KillTracker, Experience, Playable};
+use crate::{GameOverEvent, GameState};
 
 #[derive(Component)]
 pub struct Health {
@@ -26,5 +28,17 @@ impl Health {
         if self.health > self.max_health {
             self.health = self.max_health;
         }
+    }
+}
+
+pub fn update_health(
+    query: Query<(&Health, &KillTracker, &Experience), With<Playable>>,
+    mut event_writer: EventWriter<GameOverEvent>,
+    mut state: ResMut<State<GameState>>,
+) {
+    let (player_health, player_killtracker, player_experience) = query.single();
+    if player_health.health < 0.0 {
+        event_writer.send(GameOverEvent {kills:player_killtracker.get_kills(), level:player_experience.get_level()});
+        state.set(GameState::GameOver);
     }
 }

@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::components::{Moveable, BoxCollider, Health, Playable};
+use crate::components::{Moveable, BoxCollider, Health, Playable, Experience, KillTracker};
 
 
 struct Player {
@@ -47,6 +47,8 @@ pub fn spawn_player(
         .insert(Moveable::from_speed(player.move_speed))
         .insert(BoxCollider::new(player.size * player.scale))
         .insert(Health::new(player.max_health))
+        .insert(Experience::new(5.0))
+        .insert(KillTracker::new())
         .id()
 }
 

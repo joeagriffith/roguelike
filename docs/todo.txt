@@ -1,11 +1,16 @@
+
 Event system
     - rather than check every frame for certain conditions, can clean up with events
     - player_damage event to check for death, update healthbar, update health   
     - kill_event to update scoreboard
 
+Level system
+    - at certain numbers of kills, player levels up
+    - releases event 
+
 Blood
     - hostiles drop blood when killed, temporary
     - blood skating
 
-Loading Screens
-    - atm can see objects load in one by one, looks ugly
+Loading Screens>
+    - Dont need atm

@@ -12,6 +12,8 @@ pub struct Scoreboard;
 #[derive(Component)]
 pub struct Playable;
 
+#[derive(Component)]
+pub struct Levelboard;
 
 #[derive(Component)]
-pub struct Healthbar;
+pub struct GameData;

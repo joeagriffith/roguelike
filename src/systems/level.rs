@@ -1,17 +1,16 @@
 use bevy::prelude::*;
 use crate::config::{WIDTH, ASPECT_RATIO, TITLE_FONT};
-use crate::{GameState, Game};
+use crate::{GameState};
 
 pub fn load_level(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     state: Res<State<GameState>>,
-    game: Res<Game>,
 ) {
     let bundles: (Vec<SpriteBundle>, Vec<Text2dBundle>);
     match state.current() {
         GameState::Playing => bundles = lvl_1_bundles(asset_server),
-        GameState::GameOver => bundles = gameover_bundles(asset_server, game),
+        GameState::GameOver => bundles = gameover_bundles(asset_server),
     }
     for bundle in bundles.0 { commands.spawn_bundle(bundle); }
     for bundle in bundles.1 { commands.spawn_bundle(bundle); }
@@ -36,7 +35,7 @@ fn lvl_1_bundles(asset_server: Res<AssetServer>) -> (Vec<SpriteBundle>, Vec<Text
     (sprites, texts)
 }
 
-fn gameover_bundles(asset_server: Res<AssetServer>, game:Res<Game>) -> (Vec<SpriteBundle>, Vec<Text2dBundle>) {
+fn gameover_bundles(asset_server: Res<AssetServer>) -> (Vec<SpriteBundle>, Vec<Text2dBundle>) {
     let mut sprites:Vec<SpriteBundle> = Vec::new();
     let mut texts: Vec<Text2dBundle> = Vec::new();
 
@@ -71,7 +70,7 @@ fn gameover_bundles(asset_server: Res<AssetServer>, game:Res<Game>) -> (Vec<Spri
     };
 
     main_text.text.sections.push(TextSection {
-        value: format!("\nKills: {}", game.kills),
+        value: "\nLoading...".to_string(),
         style: TextStyle {
             font: asset_server.load(TITLE_FONT),
             font_size: 50.0,
