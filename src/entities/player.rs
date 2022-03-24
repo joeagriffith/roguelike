@@ -47,7 +47,7 @@ pub fn spawn_player(
         .insert(Moveable::from_speed(player.move_speed))
         .insert(BoxCollider::new(player.size * player.scale))
         .insert(Health::new(player.max_health))
-        .insert(Experience::new(5.0))
+        .insert(Experience::new(2.0))
         .insert(KillTracker::new())
         .id()
 }

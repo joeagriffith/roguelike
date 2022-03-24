@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use bevy::render::primitives::Frustum;
 
 mod config;
 mod entities;
@@ -25,7 +26,9 @@ enum SystemLabels {
 
 #[derive(Clone, Eq, PartialEq, Debug, Hash)]
 pub enum GameState {
+    GameInit,
     Playing,
+    Paused,
     GameOver,
 }
 
@@ -39,15 +42,19 @@ fn main() {
         })
         .insert_resource(ClearColor(Color::rgb(0.25, 0.03, 0.175)))
         .add_plugins(DefaultPlugins)
-        .add_state(GameState::Playing)
+        .add_state(GameState::GameInit)
         .add_startup_system(setup_camera)
         .add_event::<KillEvent>()
         .add_event::<GameOverEvent>()
-        .add_system_set(SystemSet::on_enter(GameState::Playing)
+        .add_event::<LevelUpEvent>()
+        .add_system_set(SystemSet::on_enter(GameState::GameInit)
             .with_system(spawn_player.chain(spawn_w_meteor))
             .with_system(load_level)
             .with_system(init_hud)
             .with_system(spawn_kobold_spawner)
+        )
+        .add_system_set(SystemSet::on_update(GameState::GameInit)
+            .with_system(start)
         )
         .add_system_set(SystemSet::on_update(GameState::Playing)
             .with_system(update_health)
@@ -64,13 +71,20 @@ fn main() {
             .with_system(handle_kill_event)
             .with_system(friendly_hostile_collision_check)
             .with_system(update_spawners)
+            .with_system(handle_levelup_event)
         )
-        .add_system_set(SystemSet::on_exit(GameState::Playing)
-            .with_system(teardown) 
-            .with_system(reset_camera)
+        .add_system_set(SystemSet::on_enter(GameState::Paused)
+            .with_system(spawn_ui_camera)
+        )
+        .add_system_set(SystemSet::on_update(GameState::Paused)
+        )
+        .add_system_set(SystemSet::on_exit(GameState::Paused)
+            .with_system(despawn_ui_camera)
         )
         .add_system_set(SystemSet::on_enter(GameState::GameOver)
             // .with_system(teardown.label(SystemLabels::Teardown))
+            .with_system(teardown) 
+            .with_system(reset_camera)
             .with_system(load_level)
         )
         .add_system_set(SystemSet::on_update(GameState::GameOver)
@@ -83,6 +97,22 @@ fn main() {
         .run();
 }
 
+fn spawn_ui_camera(
+    mut commands: Commands,
+) {
+    commands.spawn_bundle(UiCameraBundle{
+        ..Default::default()
+    });
+}
+
+fn despawn_ui_camera(
+    mut commands: Commands,
+    mut query: Query<(Entity, &Camera), Without<Frustum>>,
+) {
+    let (ui_cam, _cam) = query.single_mut();
+    commands.entity(ui_cam).despawn();
+}
+
 fn setup_camera(
     mut commands: Commands,
 ) {
@@ -93,7 +123,12 @@ fn reset_camera(
     mut query: Query<&mut Transform, With<Camera>>
 ) {
     query.single_mut().translation = Vec3::new(0.0, 0.0, 999.9);
+}
 
+fn start(
+    mut state: ResMut<State<GameState>>,
+) {
+    state.set(GameState::Playing);
 }
 
 fn init_hud(

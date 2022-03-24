@@ -1,4 +1,5 @@
-use bevy::prelude::{Component};
+use bevy::prelude::{Component, EventWriter};
+use crate::{LevelUpEvent};
 
 #[derive(Component)]
 pub struct Experience {
@@ -14,13 +15,17 @@ impl Experience {
             level: 1,
         }
     }
-    pub fn gain(&mut self, amount:f32) {
+    // Returns true on levelup
+    pub fn gain(&mut self, amount:f32) -> bool {
         self.xp += amount;
         if self.xp >= self.max_xp {
             println!("Level Up!");
             self.level += 1;
             self.xp -= self.max_xp;
             self.max_xp *= 1.25;
+            true
+        } else {
+            false
         }
     }
     pub fn get_xp(&self) -> f32 { self.xp }

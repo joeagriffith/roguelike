@@ -7,10 +7,11 @@ pub fn load_level(
     asset_server: Res<AssetServer>,
     state: Res<State<GameState>>,
 ) {
-    let bundles: (Vec<SpriteBundle>, Vec<Text2dBundle>);
+    let mut bundles: (Vec<SpriteBundle>, Vec<Text2dBundle>) = (Vec::new(), Vec::new());
     match state.current() {
-        GameState::Playing => bundles = lvl_1_bundles(asset_server),
+        GameState::GameInit => bundles = lvl_1_bundles(asset_server),
         GameState::GameOver => bundles = gameover_bundles(asset_server),
+        _ => (),
     }
     for bundle in bundles.0 { commands.spawn_bundle(bundle); }
     for bundle in bundles.1 { commands.spawn_bundle(bundle); }

@@ -31,6 +31,6 @@ pub fn restart_check(
     keyboard_input: Res<Input<KeyCode>>
 ) {
     if keyboard_input.just_pressed(KeyCode::Space) {
-        state.set(GameState::Playing).unwrap();
+        state.set(GameState::GameInit).unwrap();
     }
 }

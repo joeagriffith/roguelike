@@ -11,3 +11,6 @@ pub struct GameOverEvent {
     pub kills: usize,
     pub level: usize,
 }
+
+pub struct LevelUpEvent {
+}
