@@ -17,3 +17,15 @@ pub struct Levelboard;
 
 #[derive(Component)]
 pub struct GameData;
+
+#[derive(Component)]
+pub struct UI;
+
+#[derive(Component)]
+pub struct HUD;
+
+#[derive(Component)]
+pub struct Inv;
+
+#[derive(Component)]
+pub struct Primary;

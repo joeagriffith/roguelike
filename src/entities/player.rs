@@ -1,6 +1,7 @@
 use bevy::prelude::*;
-
 use crate::components::{Moveable, BoxCollider, Health, Playable, Experience, KillTracker};
+use crate::items::{Weapons, spawn_weapon};
+use crate::{NewItemEvent};
 
 
 struct Player {
@@ -11,6 +12,7 @@ struct Player {
     cols: usize,
     move_speed: f32,
     max_health: f32,
+    default_weapon: Weapons,
 }
 
 fn gabe() -> Player {
@@ -22,6 +24,7 @@ fn gabe() -> Player {
         cols: 7,
         move_speed: 5.0,
         max_health: 100.0,
+        default_weapon: Weapons::MeteorBlaster,
     }
 }
 
@@ -29,14 +32,15 @@ pub fn spawn_player(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     mut texture_atlases: ResMut<Assets<TextureAtlas>>,
-) -> Entity {
+    mut event_writer: EventWriter<NewItemEvent>,
+){
 
     let player = gabe();
 
     let texture_handle = asset_server.load(&player.texture);
     let texture_atlas = TextureAtlas::from_grid(texture_handle,player.size, player.cols, player.rows);
     let texture_atlas_handle = texture_atlases.add(texture_atlas);
-    commands
+    let player_entity = commands
         .spawn_bundle(SpriteSheetBundle {
             texture_atlas: texture_atlas_handle,
             transform: Transform::from_scale(Vec3::splat(player.scale)),
@@ -49,7 +53,8 @@ pub fn spawn_player(
         .insert(Health::new(player.max_health))
         .insert(Experience::new(2.0))
         .insert(KillTracker::new())
-        .id()
+        .id();
+    spawn_weapon(&mut commands, player.default_weapon, player_entity, &mut event_writer);
 }
 
 

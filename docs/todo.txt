@@ -1,12 +1,11 @@
+Inventory & items
+    - handle_new_item_event cant handle event sent from paused system
+    -  figure how to handle it during paused system
+    - will have to deal with multiple cameras
+    - maybe just flag one of them
+    - maybe get different parent instead of camera
 
-Event system
-    - rather than check every frame for certain conditions, can clean up with events
-    - player_damage event to check for death, update healthbar, update health   
-    - kill_event to update scoreboard
-
-Level system
-    - at certain numbers of kills, player levels up
-    - releases event 
+Fix UI for scaling window size
 
 Blood
     - hostiles drop blood when killed, temporary
@@ -14,3 +13,5 @@ Blood
 
 Loading Screens>
     - Dont need atm
+
+Fixed Timestep (Framerate)

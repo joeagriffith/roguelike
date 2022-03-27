@@ -7,6 +7,8 @@ mod teardown;
 mod input;
 mod level;
 mod handle_events;
+mod ui_screens;
+mod hud;
 
 
 pub use animation::*;
@@ -18,3 +20,5 @@ pub use teardown::*;
 pub use input::*;
 pub use level::*;
 pub use handle_events::*;
+pub use ui_screens::*;
+pub use hud::*;

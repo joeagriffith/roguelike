@@ -12,7 +12,7 @@ mod utils;
 use entities::*;
 use config::{WIDTH, ASPECT_RATIO, TEXT_FONT, BUFFER};
 use items::*;
-use components::{move_moveables, update_lifetimes, update_health, Scoreboard, HealthBar, XpBar};
+use components::*;
 use systems::*;
 use utils::*;
 
@@ -32,6 +32,24 @@ pub enum GameState {
     GameOver,
 }
 
+pub enum ItemType {
+    Weapon,
+    Trinket,
+}
+
+pub struct Inventory {
+    weapon_count: usize,
+    trinket_count: usize,
+}
+impl Inventory {
+    fn new() -> Self {
+        Self {
+            weapon_count: 0,
+            trinket_count: 0,
+        }
+    }
+}
+
 fn main() {
     App::new()
         .insert_resource(WindowDescriptor {
@@ -41,20 +59,26 @@ fn main() {
             ..Default::default()
         })
         .insert_resource(ClearColor(Color::rgb(0.25, 0.03, 0.175)))
+        .insert_resource(Inventory::new())
         .add_plugins(DefaultPlugins)
         .add_state(GameState::GameInit)
         .add_startup_system(setup_camera)
         .add_event::<KillEvent>()
         .add_event::<GameOverEvent>()
         .add_event::<LevelUpEvent>()
+        .add_event::<NewItemEvent>()
         .add_system_set(SystemSet::on_enter(GameState::GameInit)
-            .with_system(spawn_player.chain(spawn_w_meteor))
+            .with_system(new_game)
+            .with_system(spawn_player)
             .with_system(load_level)
-            .with_system(init_hud)
+            .with_system(spawn_scoreboard)
             .with_system(spawn_kobold_spawner)
         )
         .add_system_set(SystemSet::on_update(GameState::GameInit)
             .with_system(start)
+            .with_system(spawn_hud)
+        )
+        .add_system_set(SystemSet::on_enter(GameState::Playing)
         )
         .add_system_set(SystemSet::on_update(GameState::Playing)
             .with_system(update_health)
@@ -72,14 +96,22 @@ fn main() {
             .with_system(friendly_hostile_collision_check)
             .with_system(update_spawners)
             .with_system(handle_levelup_event)
+            .with_system(handle_new_item_event)
         )
         .add_system_set(SystemSet::on_enter(GameState::Paused)
             .with_system(spawn_ui_camera)
+            .with_system(spawn_pause_ui)
         )
         .add_system_set(SystemSet::on_update(GameState::Paused)
+            .with_system(resume_check)
+            .with_system(handle_new_item_event)
+        )
+        .add_system_set(SystemSet::on_exit(GameState::Playing)
+            // .with_system(teardown_hud)
         )
         .add_system_set(SystemSet::on_exit(GameState::Paused)
-            .with_system(despawn_ui_camera)
+            // .with_system(despawn_ui_camera)
+            .with_system(ui_teardown)
         )
         .add_system_set(SystemSet::on_enter(GameState::GameOver)
             // .with_system(teardown.label(SystemLabels::Teardown))
@@ -102,7 +134,7 @@ fn spawn_ui_camera(
 ) {
     commands.spawn_bundle(UiCameraBundle{
         ..Default::default()
-    });
+    }).insert(UI);
 }
 
 fn despawn_ui_camera(
@@ -116,7 +148,7 @@ fn despawn_ui_camera(
 fn setup_camera(
     mut commands: Commands,
 ) {
-    commands.spawn_bundle(OrthographicCameraBundle::new_2d());
+    commands.spawn_bundle(OrthographicCameraBundle::new_2d()).insert(Primary);
 }
 
 fn reset_camera(
@@ -131,11 +163,16 @@ fn start(
     state.set(GameState::Playing);
 }
 
-fn init_hud(
+fn new_game(
+    mut inventory: ResMut<Inventory>,
+) {
+    inventory.weapon_count = 0;
+    inventory.trinket_count = 0;
+}
+
+fn spawn_scoreboard(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
     query: Query<Entity, With<Camera>>,
 ) {
     let camera = query.single();
@@ -158,53 +195,5 @@ fn init_hud(
         )),
         ..Default::default()
     }).insert(Parent(camera)).insert(Scoreboard);
-
-
-    
-
-    // Healthbar
-    let healthbar = commands.spawn_bundle(SpriteBundle {
-        texture: asset_server.load("bar.png"),
-        transform: Transform {
-            translation: Vec3::new(0.0, 50.0, -100.0),
-            rotation: Quat::IDENTITY,
-            scale: Vec3::splat(0.4),
-        },
-        ..Default::default()
-    }).insert(Parent(camera)).id();
-
-
-
-    commands.spawn_bundle(ColorMesh2dBundle {
-        mesh: meshes.add(Mesh::from(shape::Quad {
-            size: Vec2::new(190.0, 14.0),
-            flip: false,
-        })).into(),
-        transform: Transform::from_translation(Vec3::new(0.0, 0.0, 1.0)),
-        material: materials.add(ColorMaterial::from(Color::RED)),
-        ..Default::default()
-    }).insert(Parent(healthbar)).insert(HealthBar::new(190.0));
-
-
-    // XPbar
-    let xpbar = commands.spawn_bundle(SpriteBundle {
-        texture: asset_server.load("bar.png"),
-        transform: Transform {
-            translation: Vec3::new(0.0, 42.0, -100.0),
-            rotation: Quat::IDENTITY,
-            scale: Vec3::splat(0.4),
-        },
-        ..Default::default()
-    }).insert(Parent(camera)).id();
-
-    commands.spawn_bundle(ColorMesh2dBundle {
-        mesh: meshes.add(Mesh::from(shape::Quad {
-            size: Vec2::new(190.0, 14.0),
-            flip: false,
-        })).into(),
-        transform: Transform::from_translation(Vec3::new(0.0, 0.0, 1.0)),
-        material: materials.add(ColorMaterial::from(Color::BLUE)),
-        ..Default::default()
-    }).insert(Parent(xpbar)).insert(XpBar::new(190.0));
 
 }

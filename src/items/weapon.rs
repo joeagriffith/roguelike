@@ -3,15 +3,23 @@ use bevy::utils::Duration;
 
 use crate::components::{Moveable, Friendly, Damage, BoxCollider, Lifetime, Playable};
 use super::projectile::Projectile;
+use crate::{NewItemEvent, ItemType};
+
+pub enum Weapons {
+    MeteorBlaster,
+    SolarFlare,
+}
 
 #[derive(Component)]
 pub struct Gun {
+    texture: String,
     proj_size: Vec2,
     proj_scale: f32,
     proj_texture: String,
     proj_speed: f32,
     proj_lifetime: Duration,
     timer: Timer,
+    // shoot_fn: dyn Fn(Commands, Res<AssetServer>, Query<&mut Gun>, Query<(&Transform, &TextureAtlasSprite, &Moveable), With<Playable>>, Res<Time>),
 }
 
 pub fn update_guns(
@@ -55,19 +63,38 @@ pub fn update_guns(
     }
 }
 
-
-pub fn spawn_w_meteor(
-    In(player): In<Entity>,
-    mut commands: Commands
+pub fn spawn_weapon(
+    mut commands: &mut Commands,
+    weapon: Weapons,
+    player_entity: Entity,
+    mut event_writer: &mut EventWriter<NewItemEvent>,
 ) {
+    let weapon_params = match weapon {
+        Weapons::MeteorBlaster => meteor_blaster(),
+        Weapons::SolarFlare => solar_flare(),
+    };
+    event_writer.send(NewItemEvent {texture: weapon_params.texture.clone(), item_type: ItemType::Weapon});
     commands
         .spawn()
-        .insert(meteor_blaster())
-        .insert(Parent(player));
+        .insert(weapon_params)
+        .insert(Parent(player_entity));
 }
+
 
 fn meteor_blaster() -> Gun {
     Gun {
+        texture: "meteor_blaster.png".to_string(),
+        proj_size: Vec2::new(190.0, 420.0),
+        proj_scale: 0.1,
+        proj_texture: "meteor.png".to_string(),
+        proj_speed: 10.0,
+        proj_lifetime: Duration::from_secs_f32(1.5),
+        timer: Timer::from_seconds(0.5, true),
+    }
+}
+fn solar_flare() -> Gun {
+    Gun {
+        texture: "meteor_blaster.png".to_string(),
         proj_size: Vec2::new(190.0, 420.0),
         proj_scale: 0.1,
         proj_texture: "meteor.png".to_string(),

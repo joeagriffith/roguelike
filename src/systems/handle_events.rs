@@ -1,7 +1,10 @@
 use bevy::prelude::*;
-use crate::components::{Experience, KillTracker, Scoreboard, Playable};
-use crate::{KillEvent, GameOverEvent, LevelUpEvent, GameState};
-use crate::config::WIDTH;
+use crate::components::{Primary, Experience, KillTracker, Scoreboard, Playable, UI};
+use crate::{GameState, Inventory};
+use crate::utils::*;
+use crate::systems::update_inventory;
+use crate::items::{Weapons, spawn_weapon};
+use crate::NewItemEvent;
 
 pub fn handle_kill_event(
     mut player_query: Query<(&mut Experience, &mut KillTracker), With<Playable>>,
@@ -37,45 +40,22 @@ pub fn handle_levelup_event(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     mut state: ResMut<State<GameState>>,
+    player_query: Query<Entity, With<Playable>>,
+    mut new_item_event_writer: EventWriter<NewItemEvent>,
 ) {
     for event in event_reader.iter() {
         if *state.current() == GameState::Playing {
             state.set(GameState::Paused);
         }
-
-
-        // commands.spawn_bundle(NodeBundle {
-        //     style: Style {
-        //         size: Size::new(Val::Percent(50.0), Val::Percent(80.0)),
-        //         position_type: PositionType::Absolute,
-        //         position: Rect { 
-        //             left: Val::Percent(25.0), 
-        //             top: Val::Percent(10.0), 
-        //             ..Default::default()
-        //         },
-        //         justify_content: JustifyContent::Center,
-        //         ..Default::default()
-        //     },
-        //     color: Color::RED.into(),
-        //     ..Default::default()
-        // }).with_children(|parent| {
-        //     parent.spawn_bundle(ImageBundle {
-        //         style: Style {
-        //             size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
-        //             ..Default::default()
-        //         },
-        //         image: asset_server.load("ui/border.png").into(),
-        //         ..Default::default()
-        //     });
-        // });
+        spawn_weapon(&mut commands, Weapons::SolarFlare, player_query.single(), &mut new_item_event_writer);
 
 
         commands.spawn_bundle(ImageBundle {
             style: Style {
-                size: Size::new(Val::Percent(50.0), Val::Percent(80.0)),
+                size: Size::new(Val::Percent(40.0), Val::Percent(80.0)),
                 position_type: PositionType::Absolute,
                 position: Rect {
-                    left: Val::Percent(25.0),
+                    left: Val::Percent(30.0),
                     top: Val::Percent(10.0),
                     ..Default::default()
                 },
@@ -83,7 +63,7 @@ pub fn handle_levelup_event(
             },
             image: asset_server.load("ui/border.png").into(),
             ..Default::default()
-        }).with_children(|parent| {
+        }).insert(UI).with_children(|parent| {
             parent.spawn_bundle(ImageBundle {
                 style: Style {
                     size: Size::new(Val::Percent(90.8), Val::Percent(81.0)),
@@ -97,9 +77,21 @@ pub fn handle_levelup_event(
                 },
                 image: asset_server.load("ui/bg.png").into(),
                 ..Default::default()
-            }).with_children(|parent| {
-                parent.spawn_bundle
             });
         });
+    }
+}
+
+pub fn handle_new_item_event(
+    mut event_reader: EventReader<NewItemEvent>,
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
+    mut inventory: ResMut<Inventory>,
+    camera_query: Query<(Entity, &Primary), With<Camera>>,
+) {
+    for event in event_reader.iter() {
+        println!("Handling new item event");
+        let (camera, _flag) = camera_query.single();
+        update_inventory(&mut commands, &asset_server, &mut inventory, event, camera);
     }
 }
