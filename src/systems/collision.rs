@@ -1,17 +1,17 @@
 use bevy::prelude::*;
 use bevy::sprite::collide_aabb::collide;
-use crate::components::{Friendly, Damage, Hostile, Health, BoxCollider, Playable, XpReward};
+use crate::components::{Friendly, Damage, Hostile, Health, BoxCollider, Playable, XpReward, Projectile};
 use crate::utils::{KillEvent};
 
 // Checks for collisions between player shot projectiles and hostiles
 pub fn friendly_hostile_collision_check(
         mut commands: Commands,
-        mut friendly_query: Query<(Entity, &Transform, &BoxCollider, &Damage), With<Friendly>>,
+        mut friendly_query: Query<(Entity, &Transform, &BoxCollider, &Damage, &mut Projectile), With<Friendly>>,
         mut hostile_query: Query<(Entity, &Transform, &BoxCollider, &mut Health, &XpReward), With<Hostile>>,
         mut event_writer: EventWriter<KillEvent>, 
 ) {
 
-    for (friendly_entity, friendly_transform, friendly_collider, friendly_damage) in friendly_query.iter_mut() {
+    for (friendly_entity, friendly_transform, friendly_collider, friendly_damage, mut projectile) in friendly_query.iter_mut() {
         let friendly_size = friendly_collider.get_size();
         for (hostile_entity, hostile_transform, hostile_collider, mut hostile_health, xp_reward) in hostile_query.iter_mut() {
 
@@ -28,12 +28,15 @@ pub fn friendly_hostile_collision_check(
                     commands.entity(hostile_entity).despawn();
 
                     event_writer.send(KillEvent { xp_reward: xp_reward.get() })
-
                 }
                 else {
                     hostile_health.set_health(health);
                 }
-                commands.entity(friendly_entity).despawn();
+                if projectile.destroy_on_impact {
+                    if projectile.pierce() {
+                        commands.entity(friendly_entity).despawn();
+                    }
+                }
                 break;
             }
         }

@@ -47,7 +47,7 @@ pub fn handle_levelup_event(
         if *state.current() == GameState::Playing {
             state.set(GameState::Paused);
         }
-        spawn_weapon(&mut commands, Weapons::SolarFlare, player_query.single(), &mut new_item_event_writer);
+        spawn_weapon(&mut commands, Weapons::LightningRod, player_query.single(), &mut new_item_event_writer);
 
 
         commands.spawn_bundle(ImageBundle {
