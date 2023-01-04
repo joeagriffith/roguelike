@@ -51,7 +51,7 @@ impl Inventory {
 }
 
 fn main() {
-    App::new()
+    let app = App::new()
         .insert_resource(WindowDescriptor {
             title: "Roguelike".to_string(),
             width: WIDTH,
@@ -67,12 +67,19 @@ fn main() {
         .add_event::<GameOverEvent>()
         .add_event::<LevelUpEvent>()
         .add_event::<NewItemEvent>()
-        .add_system_set(SystemSet::on_enter(GameState::GameInit)
+        .add_system_set(
+            {
+                let mut set = SystemSet::on_enter(GameState::GameInit)
             .with_system(new_game)
             .with_system(spawn_player)
             .with_system(load_level)
-            .with_system(spawn_scoreboard)
-            .with_system(spawn_kobold_spawner)
+            .with_system(spawn_scoreboard);
+            if true {
+                set = set.with_system(spawn_kobold_spawner);
+            }
+            set
+            // .with_system(spawn_kobold_spawner)
+            }
         )
         .add_system_set(SystemSet::on_update(GameState::GameInit)
             .with_system(start)
